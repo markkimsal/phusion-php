@@ -1,0 +1,61 @@
+FROM php:7.3.14-fpm-buster as fpm
+
+RUN docker-php-ext-install mysqli pdo_mysql \
+    && docker-php-ext-enable mysqli pdo_mysql
+
+# Add Microsoft repo for Microsoft ODBC Driver 13 for Linux
+RUN apt-get update \
+    && apt-get install -y apt-utils gnupg curl build-essential libaio1 software-properties-common locales iputils-ping --no-install-recommends \
+    && apt-get install -y \
+    apt-transport-https \
+    && curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add - \
+    && curl https://packages.microsoft.com/config/ubuntu/18.04/prod.list > /etc/apt/sources.list.d/mssql-release.list \
+    && apt-get update
+
+# Install Dependencies
+RUN ACCEPT_EULA=Y apt-get install -y \
+    unixodbc \
+    unixodbc-dev \
+    libgss3 \
+    odbcinst \
+    msodbcsql17 \
+    locales \
+    && echo "en_US.UTF-8 UTF-8" > /etc/locale.gen && locale-gen
+
+# Install pdo_sqlsrv and sqlsrv from PECL. Replace pdo_sqlsrv-4.1.8preview with preferred version.
+RUN pecl install pdo_sqlsrv sqlsrv \
+    && docker-php-ext-enable pdo_sqlsrv sqlsrv
+
+RUN set -ex \
+    && { \
+            apt-get install -y libpng-dev libjpeg-dev libfreetype6-dev; \
+            rm -rf /var/lib/apt/lists/*; \
+       }
+
+RUN docker-php-ext-configure gd \
+        --with-freetype-dir=/usr/include/freetype2 \
+        --with-png-dir=/usr/include \
+        --with-jpeg-dir=/usr/include
+
+RUN docker-php-ext-install gd \
+    && docker-php-ext-enable gd opcache
+
+FROM markkimsal/phusion-serverimage:0.11-debian-buster
+COPY --from=fpm /usr/local/ /usr/local/
+COPY --from=fpm /usr/lib/x86_64-linux-gnu/libargon*.so.1 /usr/lib/x86_64-linux-gnu/
+COPY --from=fpm /usr/lib/x86_64-linux-gnu/libxml*.so.2 /usr/lib/x86_64-linux-gnu/
+COPY --from=fpm /usr/lib/x86_64-linux-gnu/libicu*.so.63 /usr/lib/x86_64-linux-gnu/
+COPY --from=fpm /usr/lib/x86_64-linux-gnu/libsodium*.so.23 /usr/lib/x86_64-linux-gnu/
+COPY --from=fpm /usr/lib/x86_64-linux-gnu/libsql*.so.0 /usr/lib/x86_64-linux-gnu/
+COPY --from=fpm /usr/lib/x86_64-linux-gnu/libodbc*.so /usr/lib/x86_64-linux-gnu/
+COPY --from=fpm /usr/lib/x86_64-linux-gnu/libpng*.so /usr/lib/x86_64-linux-gnu/
+COPY --from=fpm /usr/lib/x86_64-linux-gnu/libjpeg*.so /usr/lib/x86_64-linux-gnu/
+COPY --from=fpm /usr/lib/x86_64-linux-gnu/libfreet*.so /usr/lib/x86_64-linux-gnu/
+RUN ldconfig
+
+RUN install_clean nginx
+
+COPY runit /etc/service/
+
+WORKDIR /app
+CMD ["/sbin/my_init"]
