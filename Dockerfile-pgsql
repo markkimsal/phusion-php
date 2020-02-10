@@ -1,0 +1,45 @@
+FROM php:7.3.14-fpm-buster as fpm
+
+RUN set -ex \
+    && { \
+			apt-get update ; \
+            apt-get install -y libpq-dev; \
+            rm -rf /var/lib/apt/lists/*; \
+       }
+
+RUN docker-php-ext-install pdo pdo_pgsql 
+
+RUN set -ex \
+    && { \
+			apt-get update ; \
+            apt-get install -y libpng-dev libjpeg-dev libfreetype6-dev; \
+            rm -rf /var/lib/apt/lists/*; \
+       }
+
+RUN docker-php-ext-configure gd \
+        --with-freetype-dir=/usr/include/freetype2 \
+        --with-png-dir=/usr/include \
+        --with-jpeg-dir=/usr/include
+
+RUN docker-php-ext-install gd \
+    && docker-php-ext-enable gd opcache
+
+FROM markkimsal/phusion-serverimage:0.11-debian-buster
+COPY --from=fpm /usr/local/ /usr/local/
+COPY --from=fpm /usr/lib/x86_64-linux-gnu/libargon*.so.1 /usr/lib/x86_64-linux-gnu/
+COPY --from=fpm /usr/lib/x86_64-linux-gnu/libxml*.so.2 /usr/lib/x86_64-linux-gnu/
+COPY --from=fpm /usr/lib/x86_64-linux-gnu/libicu*.so.63 /usr/lib/x86_64-linux-gnu/
+COPY --from=fpm /usr/lib/x86_64-linux-gnu/libsodium*.so.23 /usr/lib/x86_64-linux-gnu/
+COPY --from=fpm /usr/lib/x86_64-linux-gnu/libsql*.so.0 /usr/lib/x86_64-linux-gnu/
+COPY --from=fpm /usr/lib/x86_64-linux-gnu/libpq*.so /usr/lib/x86_64-linux-gnu/
+COPY --from=fpm /usr/lib/x86_64-linux-gnu/libpng*.so /usr/lib/x86_64-linux-gnu/
+COPY --from=fpm /usr/lib/x86_64-linux-gnu/libjpeg*.so /usr/lib/x86_64-linux-gnu/
+COPY --from=fpm /usr/lib/x86_64-linux-gnu/libfreet*.so /usr/lib/x86_64-linux-gnu/
+RUN ldconfig
+
+RUN install_clean nginx
+
+COPY runit /etc/service/
+
+WORKDIR /app
+CMD ["/sbin/my_init"]

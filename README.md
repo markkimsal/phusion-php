@@ -1,5 +1,7 @@
 ```
 docker build -t markkimsal/phusion-lemp:7.3.14-mssql -f ./Dockerfile-mssql .
+docker build -t markkimsal/phusion-lemp:7.3.14-pgsql -f ./Dockerfile-pgsql .
+docker build -t markkimsal/phusion-lemp:7.3.14-mysql -f ./Dockerfile-mysql .
 ```
 
 Official PHP docker image combined with phusion/baseimage to get cron, syslog, runit, and nginx
