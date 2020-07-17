@@ -40,6 +40,17 @@ RUN docker-php-ext-configure gd \
 RUN docker-php-ext-install gd \
     && docker-php-ext-enable gd opcache
 
+RUN set -ex \
+    && { \
+			apt-get update ; \
+            apt-get install -y zlib1g-dev libicu-dev; \
+            rm -rf /var/lib/apt/lists/*; \
+       }
+
+RUN docker-php-ext-configure intl \
+    && docker-php-ext-install intl
+
+
 FROM markkimsal/phusion-serverimage:0.11-debian-buster
 COPY --from=fpm /usr/local/ /usr/local/
 COPY --from=fpm /usr/lib/x86_64-linux-gnu/libargon*.so.1 /usr/lib/x86_64-linux-gnu/
