@@ -53,6 +53,8 @@ RUN docker-php-ext-configure intl \
 
 FROM markkimsal/phusion-serverimage:0.11-debian-buster
 COPY --from=fpm /usr/local/ /usr/local/
+COPY --from=fpm /usr/bin/ /usr/bin/
+COPY --from=fpm /opt/microsoft/ /opt/microsoft/
 COPY --from=fpm /usr/lib/x86_64-linux-gnu/libargon*.so.1 /usr/lib/x86_64-linux-gnu/
 COPY --from=fpm /usr/lib/x86_64-linux-gnu/libxml*.so.2 /usr/lib/x86_64-linux-gnu/
 COPY --from=fpm /usr/lib/x86_64-linux-gnu/libicu*.so.63 /usr/lib/x86_64-linux-gnu/
@@ -62,9 +64,13 @@ COPY --from=fpm /usr/lib/x86_64-linux-gnu/libodbc*.so /usr/lib/x86_64-linux-gnu/
 COPY --from=fpm /usr/lib/x86_64-linux-gnu/libpng*.so /usr/lib/x86_64-linux-gnu/
 COPY --from=fpm /usr/lib/x86_64-linux-gnu/libjpeg*.so /usr/lib/x86_64-linux-gnu/
 COPY --from=fpm /usr/lib/x86_64-linux-gnu/libfreet*.so /usr/lib/x86_64-linux-gnu/
+RUN echo '/opt/microsoft/msodbcsql17/lib64/' > /etc/ld.so.conf.d/msodbcsql.conf
 RUN ldconfig
 
 RUN install_clean nginx
+
+COPY --from=fpm /etc/odbc* /etc/
+COPY --from=fpm /etc/ODBC* /etc/
 
 COPY runit /etc/service/
 
