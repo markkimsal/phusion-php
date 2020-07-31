@@ -7,6 +7,14 @@ docker build -t markkimsal/phusion-lemp:7.3.14-mysql -f ./Dockerfile-mysql .
 Official PHP docker image combined with phusion/baseimage to get cron, syslog, runit, and nginx
 
 
+MSSQL image now with pdo_sqlsrv and pdo_dblib.
+
+All images have intl extension because `money_format()` is going away.
+
+All images have gd, because maybe you need to make some user initial icons.
+
+All images have mysql, because, yeah, you probably need to connect to some DB, and also mysql
+
 ## PHP extension installation
 
 You can install extension just like the "official" php docker container
