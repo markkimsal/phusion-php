@@ -12,10 +12,9 @@ RUN set -ex \
 RUN docker-php-ext-configure gd \
         --with-freetype-dir=/usr/include/freetype2 \
         --with-png-dir=/usr/include \
-        --with-jpeg-dir=/usr/include
-
-RUN docker-php-ext-install gd \
-    && docker-php-ext-enable gd opcache
+        --with-jpeg-dir=/usr/include \
+    && docker-php-ext-install gd \
+    && docker-php-ext-enable opcache
 
 RUN set -ex \
     && { \
@@ -35,7 +34,6 @@ COPY --from=fpm /usr/lib/x86_64-linux-gnu/libxml*.so.2 /usr/lib/x86_64-linux-gnu
 COPY --from=fpm /usr/lib/x86_64-linux-gnu/libicu*.so.63 /usr/lib/x86_64-linux-gnu/
 COPY --from=fpm /usr/lib/x86_64-linux-gnu/libsodium*.so.23 /usr/lib/x86_64-linux-gnu/
 COPY --from=fpm /usr/lib/x86_64-linux-gnu/libsql*.so.0 /usr/lib/x86_64-linux-gnu/
-COPY --from=fpm /usr/lib/x86_64-linux-gnu/libpq*.so /usr/lib/x86_64-linux-gnu/
 COPY --from=fpm /usr/lib/x86_64-linux-gnu/libpng*.so /usr/lib/x86_64-linux-gnu/
 COPY --from=fpm /usr/lib/x86_64-linux-gnu/libjpeg*.so /usr/lib/x86_64-linux-gnu/
 COPY --from=fpm /usr/lib/x86_64-linux-gnu/libfreet*.so /usr/lib/x86_64-linux-gnu/
