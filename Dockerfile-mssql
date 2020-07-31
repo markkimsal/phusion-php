@@ -9,18 +9,29 @@ RUN apt-get update \
     && apt-get install -y \
     apt-transport-https \
     && curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add - \
-    && curl https://packages.microsoft.com/config/ubuntu/18.04/prod.list > /etc/apt/sources.list.d/mssql-release.list \
-    && apt-get update
+    && curl https://packages.microsoft.com/config/ubuntu/18.04/prod.list > /etc/apt/sources.list.d/mssql-release.list
 
 # Install Dependencies
-RUN ACCEPT_EULA=Y apt-get install -y \
+RUN apt-get update \
+    && ACCEPT_EULA=Y apt-get install -y \
     unixodbc \
     unixodbc-dev \
     libgss3 \
     odbcinst \
     msodbcsql17 \
     locales \
+	freetds-bin \
+	freetds-dev \
+	freetds-common \
+	libct4 \
+	libsybdb5 \
+	tdsodbc \
     && echo "en_US.UTF-8 UTF-8" > /etc/locale.gen && locale-gen
+
+
+RUN docker-php-ext-configure pdo_dblib \
+	   --with-libdir=/lib/x86_64-linux-gnu/  \
+    && docker-php-ext-install pdo_dblib
 
 # Install pdo_sqlsrv and sqlsrv from PECL. Replace pdo_sqlsrv-4.1.8preview with preferred version.
 RUN pecl install pdo_sqlsrv sqlsrv \
@@ -30,15 +41,13 @@ RUN set -ex \
     && { \
             apt-get install -y libpng-dev libjpeg-dev libfreetype6-dev; \
             rm -rf /var/lib/apt/lists/*; \
-       }
-
-RUN docker-php-ext-configure gd \
+       } \
+    && docker-php-ext-configure gd \
         --with-freetype-dir=/usr/include/freetype2 \
         --with-png-dir=/usr/include \
-        --with-jpeg-dir=/usr/include
-
-RUN docker-php-ext-install gd \
-    && docker-php-ext-enable gd opcache
+        --with-jpeg-dir=/usr/include \
+    && docker-php-ext-install gd \
+    && docker-php-ext-enable opcache
 
 RUN set -ex \
     && { \
@@ -64,6 +73,7 @@ COPY --from=fpm /usr/lib/x86_64-linux-gnu/libodbc*.so /usr/lib/x86_64-linux-gnu/
 COPY --from=fpm /usr/lib/x86_64-linux-gnu/libpng*.so /usr/lib/x86_64-linux-gnu/
 COPY --from=fpm /usr/lib/x86_64-linux-gnu/libjpeg*.so /usr/lib/x86_64-linux-gnu/
 COPY --from=fpm /usr/lib/x86_64-linux-gnu/libfreet*.so /usr/lib/x86_64-linux-gnu/
+COPY --from=fpm /usr/lib/x86_64-linux-gnu/libsyb*.so /usr/lib/x86_64-linux-gnu/
 RUN echo '/opt/microsoft/msodbcsql17/lib64/' > /etc/ld.so.conf.d/msodbcsql.conf
 RUN ldconfig
 
