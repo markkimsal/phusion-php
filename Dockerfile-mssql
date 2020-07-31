@@ -1,7 +1,6 @@
-FROM php:7.3.14-fpm-buster as fpm
+FROM php:7.3.20-fpm-buster as fpm
 
-RUN docker-php-ext-install mysqli pdo_mysql \
-    && docker-php-ext-enable mysqli pdo_mysql
+RUN docker-php-ext-install mysqli pdo_mysql
 
 # Add Microsoft repo for Microsoft ODBC Driver 13 for Linux
 RUN apt-get update \

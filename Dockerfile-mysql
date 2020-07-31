@@ -1,11 +1,4 @@
-FROM php:7.3.14-fpm-buster as fpm
-
-RUN set -ex \
-    && { \
-			apt-get update ; \
-            apt-get install -y libpq-dev; \
-            rm -rf /var/lib/apt/lists/*; \
-       }
+FROM php:7.3.20-fpm-buster as fpm
 
 RUN docker-php-ext-install pdo pdo_mysql mysqli
 

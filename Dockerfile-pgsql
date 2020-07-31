@@ -1,4 +1,4 @@
-FROM php:7.3.14-fpm-buster as fpm
+FROM php:7.3.20-fpm-buster as fpm
 
 RUN set -ex \
     && { \
@@ -7,7 +7,7 @@ RUN set -ex \
             rm -rf /var/lib/apt/lists/*; \
        }
 
-RUN docker-php-ext-install pdo pdo_pgsql 
+RUN docker-php-ext-install pdo pdo_pgsql pdo_mysql mysqli
 
 RUN set -ex \
     && { \
