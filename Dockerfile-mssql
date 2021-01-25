@@ -1,4 +1,4 @@
-FROM php:7.3.20-fpm-buster as fpm
+FROM php:7.3.26-fpm-buster as fpm
 
 RUN docker-php-ext-install mysqli pdo_mysql
 
@@ -40,13 +40,35 @@ RUN set -ex \
     && { \
             apt-get install -y libpng-dev libjpeg-dev libfreetype6-dev; \
             rm -rf /var/lib/apt/lists/*; \
-       } \
-    && docker-php-ext-configure gd \
+       }
+
+RUN docker-php-ext-configure gd \
         --with-freetype-dir=/usr/include/freetype2 \
         --with-png-dir=/usr/include \
-        --with-jpeg-dir=/usr/include \
-    && docker-php-ext-install gd \
+        --with-jpeg-dir=/usr/include
+
+RUN docker-php-ext-install gd \
     && docker-php-ext-enable opcache
+
+RUN set -ex \
+    && { \
+            apt-get update ; \
+            apt-get install -y libmemcached-dev; \
+            rm -rf /var/lib/apt/lists/*; \
+       }
+
+RUN set -ex && \
+    { \
+            pecl install igbinary && \
+            pecl install --nobuild memcached && \
+            cd "$(pecl config-get temp_dir)/memcached" && \
+            phpize && \
+            ./configure --enable-memcached-igbinary && \
+            make -j$(nproc) && \
+            make install; \
+    } && \
+    docker-php-ext-enable igbinary memcached
+
 
 RUN set -ex \
     && { \
@@ -62,17 +84,20 @@ RUN docker-php-ext-configure intl \
 FROM markkimsal/phusion-serverimage:0.11-debian-buster
 COPY --from=fpm /usr/local/ /usr/local/
 COPY --from=fpm /usr/bin/ /usr/bin/
+COPY --from=fpm /usr/lib/x86_64-linux-gnu/libargon*.so.1   \
+                /usr/lib/x86_64-linux-gnu/libxml*.so.2     \
+                /usr/lib/x86_64-linux-gnu/libicu*.so.63    \
+                /usr/lib/x86_64-linux-gnu/libsodium*.so.23 \
+                /usr/lib/x86_64-linux-gnu/libsql*.so.0     \
+                /usr/lib/x86_64-linux-gnu/libodbc*.so      \
+                /usr/lib/x86_64-linux-gnu/libpng*.so       \
+                /usr/lib/x86_64-linux-gnu/libjpeg*.so      \
+                /usr/lib/x86_64-linux-gnu/libfreet*.so     \
+                /usr/lib/x86_64-linux-gnu/libmemcached*.so \
+                /usr/lib/x86_64-linux-gnu/
+# COPY --from=fpm /usr/lib/x86_64-linux-gnu/libmemcached*.so /usr/lib/x86_64-linux-gnu/
+COPY --from=fpm /usr/lib/x86_64-linux-gnu/libsyb*.so       /usr/lib/x86_64-linux-gnu/
 COPY --from=fpm /opt/microsoft/ /opt/microsoft/
-COPY --from=fpm /usr/lib/x86_64-linux-gnu/libargon*.so.1 /usr/lib/x86_64-linux-gnu/
-COPY --from=fpm /usr/lib/x86_64-linux-gnu/libxml*.so.2 /usr/lib/x86_64-linux-gnu/
-COPY --from=fpm /usr/lib/x86_64-linux-gnu/libicu*.so.63 /usr/lib/x86_64-linux-gnu/
-COPY --from=fpm /usr/lib/x86_64-linux-gnu/libsodium*.so.23 /usr/lib/x86_64-linux-gnu/
-COPY --from=fpm /usr/lib/x86_64-linux-gnu/libsql*.so.0 /usr/lib/x86_64-linux-gnu/
-COPY --from=fpm /usr/lib/x86_64-linux-gnu/libodbc*.so /usr/lib/x86_64-linux-gnu/
-COPY --from=fpm /usr/lib/x86_64-linux-gnu/libpng*.so /usr/lib/x86_64-linux-gnu/
-COPY --from=fpm /usr/lib/x86_64-linux-gnu/libjpeg*.so /usr/lib/x86_64-linux-gnu/
-COPY --from=fpm /usr/lib/x86_64-linux-gnu/libfreet*.so /usr/lib/x86_64-linux-gnu/
-COPY --from=fpm /usr/lib/x86_64-linux-gnu/libsyb*.so /usr/lib/x86_64-linux-gnu/
 RUN echo '/opt/microsoft/msodbcsql17/lib64/' > /etc/ld.so.conf.d/msodbcsql.conf
 RUN ldconfig
 

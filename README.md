@@ -1,7 +1,7 @@
 ```
-docker build -t markkimsal/phusion-lemp:7.3.20-mssql -f ./Dockerfile-mssql .
-docker build -t markkimsal/phusion-lemp:7.3.20-pgsql -f ./Dockerfile-pgsql .
-docker build -t markkimsal/phusion-lemp:7.3.20-mysql -f ./Dockerfile-mysql .
+docker build -t markkimsal/phusion-lemp:7.3.26-mssql -f ./Dockerfile-mssql .
+docker build -t markkimsal/phusion-lemp:7.3.26-pgsql -f ./Dockerfile-pgsql .
+docker build -t markkimsal/phusion-lemp:7.3.26-mysql -f ./Dockerfile-mysql .
 ```
 
 Official PHP docker image combined with phusion/baseimage to get cron, syslog, runit, and nginx
@@ -15,12 +15,14 @@ All images have gd, because maybe you need to make some user initial icons.
 
 All images have mysql, because, yeah, you probably need to connect to some DB, and also mysql
 
+All images have sqlite3, readline, memcached, and igbinary (as of 7.3.26)
+
 ## PHP extension installation
 
 You can install extension just like the "official" php docker container
 
 ```
-FROM markkimsal/phuion-lemp:7.3.20-fpm-buster
+FROM markkimsal/phuion-lemp:7.3.26-fpm-buster
 
 RUN docker-php-ext-install mysqli pdo_mysql \
     && docker-php-ext-enable mysqli pdo_mysql
