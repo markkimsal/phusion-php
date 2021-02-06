@@ -80,8 +80,14 @@ RUN set -ex \
 RUN docker-php-ext-configure intl \
     && docker-php-ext-install intl
 
+RUN set -ex && \
+    { \
+            pecl install xdebug; \
+    }
 
 FROM markkimsal/phusion-serverimage:0.11-debian-buster
+RUN install_clean nginx
+
 COPY --from=fpm /usr/local/ /usr/local/
 COPY --from=fpm /usr/bin/ /usr/bin/
 COPY --from=fpm /usr/lib/x86_64-linux-gnu/libargon*.so.1   \
@@ -100,8 +106,6 @@ COPY --from=fpm /usr/lib/x86_64-linux-gnu/libsyb*.so       /usr/lib/x86_64-linux
 COPY --from=fpm /opt/microsoft/ /opt/microsoft/
 RUN echo '/opt/microsoft/msodbcsql17/lib64/' > /etc/ld.so.conf.d/msodbcsql.conf
 RUN ldconfig
-
-RUN install_clean nginx
 
 COPY --from=fpm /etc/odbc* /etc/
 COPY --from=fpm /etc/ODBC* /etc/

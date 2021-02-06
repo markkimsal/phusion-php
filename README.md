@@ -17,6 +17,8 @@ All images have mysql, because, yeah, you probably need to connect to some DB, a
 
 All images have sqlite3, readline, memcached, and igbinary (as of 7.3.26)
 
+All images have xdebug extension available, but not enabled by default.  (use `-d zend_extension=xdebug.so` to enable per run (as of 7.3.26))
+
 ## PHP extension installation
 
 You can install extension just like the "official" php docker container

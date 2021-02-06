@@ -55,8 +55,14 @@ RUN set -ex \
 RUN docker-php-ext-configure intl \
     && docker-php-ext-install intl
 
+RUN set -ex && \
+    { \
+            pecl install xdebug; \
+    }
 
 FROM markkimsal/phusion-serverimage:0.11-debian-buster
+RUN install_clean nginx
+
 COPY --from=fpm /usr/local/ /usr/local/
 COPY --from=fpm /usr/lib/x86_64-linux-gnu/libargon*.so.1   \
                 /usr/lib/x86_64-linux-gnu/libxml*.so.2     \
@@ -71,8 +77,6 @@ COPY --from=fpm /usr/lib/x86_64-linux-gnu/libargon*.so.1   \
 COPY --from=fpm /usr/lib/x86_64-linux-gnu/libpq*.so /usr/lib/x86_64-linux-gnu/
 
 RUN ldconfig
-
-RUN install_clean nginx
 
 COPY runit /etc/service/
 
