@@ -60,6 +60,24 @@ RUN set -ex && \
             pecl install xdebug; \
     }
 
+RUN set -ex \
+    && { \
+        apt-get update ; \
+        apt-get install -y libxml2-dev; \
+        rm -rf /var/lib/apt/lists/*; \
+        docker-php-ext-install soap; \
+    }
+
+RUN set -ex \
+    && { \
+        apt-get update ; \
+        #apt-get install -y zlib1g-dev; \
+        apt-get install -y libzip-dev libzip4; \
+        docker-php-ext-configure zip --with-zlib-dir=/usr; \
+        docker-php-ext-install zip; \
+        rm -rf /var/lib/apt/lists/*; \
+    }
+
 FROM markkimsal/phusion-serverimage:0.11-debian-buster
 RUN install_clean nginx
 
