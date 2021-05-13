@@ -1,0 +1,216 @@
+FROM php:7.3.26-fpm-buster as fpm
+
+RUN docker-php-ext-install pdo pdo_mysql mysqli
+
+RUN set -ex \
+    && { \
+			apt-get update ; \
+            apt-get install -y libpng-dev libjpeg-dev libfreetype6-dev; \
+            rm -rf /var/lib/apt/lists/*; \
+       }
+
+RUN docker-php-ext-configure gd \
+        --with-freetype-dir=/usr/include/freetype2 \
+        --with-png-dir=/usr/include \
+        --with-jpeg-dir=/usr/include
+
+RUN docker-php-ext-install gd \
+    && docker-php-ext-enable opcache
+
+RUN set -ex \
+    && { \
+            apt-get update ; \
+            apt-get install -y libmemcached-dev; \
+            rm -rf /var/lib/apt/lists/*; \
+       }
+
+RUN set -ex && \
+    { \
+            pecl install igbinary && \
+            pecl install --nobuild memcached && \
+            cd "$(pecl config-get temp_dir)/memcached" && \
+            phpize && \
+            ./configure --enable-memcached-igbinary && \
+            make -j$(nproc) && \
+            make install; \
+    } && \
+    docker-php-ext-enable igbinary memcached
+
+RUN set -ex \
+    && { \
+            apt-get update ; \
+            apt-get install -y zlib1g-dev libicu-dev; \
+            rm -rf /var/lib/apt/lists/*; \
+       }
+
+RUN docker-php-ext-configure intl \
+    && docker-php-ext-install intl
+
+RUN set -ex && \
+    { \
+            pecl install xdebug; \
+    }
+
+# ZIP
+RUN set -ex \
+    && { \
+            apt-get update ; \
+            apt-get install -y libzip-dev; \
+            rm -rf /var/lib/apt/lists/*; \
+            docker-php-ext-install zip; \
+            docker-php-ext-enable zip; \
+       }
+
+# XML
+RUN set -ex \
+    && { \
+            apt-get update ; \
+            apt-get install -y libxml2-dev; \
+            rm -rf /var/lib/apt/lists/*; \
+            docker-php-ext-install soap; \
+       }
+
+# SSH
+RUN set -ex \
+    && { \
+            apt-get update ; \
+            apt-get install -y libssl-dev libssh2-1-dev git; \
+            rm -rf /var/lib/apt/lists/*; \
+			pecl install ssh2-1.2; \
+		    docker-php-ext-enable ssh2; \
+       }
+
+# Add Microsoft repo for Microsoft ODBC Driver 13 for Linux
+
+RUN set -ex \
+    && { \
+            apt-get update; \
+            apt-get install -y apt-utils gnupg curl build-essential libaio1 software-properties-common locales iputils-ping --no-install-recommends; \
+            apt-get install -y apt-transport-https; \
+            curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add - && \
+            curl https://packages.microsoft.com/config/ubuntu/18.04/prod.list > /etc/apt/sources.list.d/mssql-release.list; \
+      }
+
+# Install Dependencies
+RUN set -ex \
+    && { \
+            apt-get update; \
+            ACCEPT_EULA=Y apt-get install -y \
+            unixodbc \
+            unixodbc-dev \
+            libgss3 \
+            odbcinst \
+            msodbcsql17 \
+            locales \
+            freetds-bin \
+            freetds-dev \
+            freetds-common \
+            libct4 \
+            libsybdb5 \
+            tdsodbc ; \
+            echo "en_US.UTF-8 UTF-8" > /etc/locale.gen && locale-gen; \
+            rm -rf /var/lib/apt/lists/*; \
+    }
+
+
+RUN docker-php-ext-configure pdo_dblib \
+    --with-libdir=/lib/x86_64-linux-gnu/  \
+    && docker-php-ext-install pdo_dblib
+
+# Install pdo_sqlsrv and sqlsrv from PECL.
+# Replace pdo_sqlsrv-4.1.8preview with preferred version.
+RUN pecl install pdo_sqlsrv sqlsrv \
+    && docker-php-ext-enable pdo_sqlsrv sqlsrv
+
+
+FROM markkimsal/phusion-serverimage:0.11-debian-buster
+RUN install_clean nginx
+
+COPY --from=fpm /usr/local/ /usr/local/
+COPY --from=fpm /usr/lib/x86_64-linux-gnu/libargon*.so.1   \
+                /usr/lib/x86_64-linux-gnu/libxml*.so.2     \
+                /usr/lib/x86_64-linux-gnu/libicu*.so.63    \
+                /usr/lib/x86_64-linux-gnu/libsodium*.so.23 \
+                /usr/lib/x86_64-linux-gnu/libsql*.so.0     \
+                /usr/lib/x86_64-linux-gnu/libpng*.so       \
+                /usr/lib/x86_64-linux-gnu/libjpeg*.so      \
+                /usr/lib/x86_64-linux-gnu/libzip*.so       \
+                /usr/lib/x86_64-linux-gnu/libfreet*.so     \
+                /usr/lib/x86_64-linux-gnu/libmemcached*.so \
+                /usr/lib/x86_64-linux-gnu/
+
+#MSSQL
+COPY --from=fpm /usr/lib/x86_64-linux-gnu/libsyb*.so \
+                /usr/lib/x86_64-linux-gnu/libodbc*.so \
+                /usr/lib/x86_64-linux-gnu/
+
+COPY --from=fpm /opt/microsoft/ /opt/microsoft/
+RUN echo '/opt/microsoft/msodbcsql17/lib64/' > /etc/ld.so.conf.d/msodbcsql.conf
+
+RUN ldconfig
+
+COPY runit /etc/service/
+
+RUN set -ex && \
+    { \
+        php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"; \
+        php composer-setup.php; \
+        php -r "unlink('composer-setup.php');"; \
+        mv composer.phar /usr/local/bin/composer; \
+        chmod a+x /usr/local/bin/composer; \
+    }
+
+RUN set -ex && \
+    { \
+        apt-get update ; \
+        apt-get install -y --no-install-recommends git-core; \
+        rm -rf /var/lib/apt/lists/*; \
+    }
+
+RUN set -ex && \
+    { \
+        cd ~; \
+        curl -sL https://deb.nodesource.com/setup_12.x -o nodesource_setup.sh; \
+        bash ./nodesource_setup.sh; \
+        apt-get install -y nodejs; \
+    }
+        #curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.3/install.sh | bash; \*/
+        #export NVM_DIR="root/.nvm"; \*/
+        #[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" \*/
+        #[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion" \*/
+        #nvm install v12.14; \*/
+
+RUN set -ex && \
+    { \
+     curl -sL https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -; \
+     echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list; \
+     apt-get update && apt-get install yarn; \
+     rm -rf /var/lib/apt/lists/*; \
+   }
+
+RUN set -ex \
+    && { \
+            apt-get update ; \
+            apt-get install -y ca-certificates; \
+            rm -rf /var/lib/apt/lists/*; \
+       }
+
+RUN set -ex && \
+    { \
+        curl -LO https://deployer.org/deployer.phar; \
+        mv deployer.phar /usr/local/bin/deployer; \
+        chmod +x /usr/local/bin/deployer; \
+        composer global require deployer/recipes --dev; \
+        curl -L https://raw.githubusercontent.com/kohkimakimoto/altax/master/installer.sh | bash -s system; \
+        apt-get update && apt-get install openssh-client; \
+        rm -rf /var/lib/apt/lists/*; \
+    }
+
+# MSSQL
+COPY --from=fpm /etc/odbc* /etc/
+COPY --from=fpm /etc/ODBC* /etc/
+
+RUN chown -R www-data /var/www
+
+WORKDIR /app
+CMD ["/sbin/my_init"]
