@@ -46,12 +46,12 @@ RUN set -ex \
 RUN docker-php-ext-configure intl \
     && docker-php-ext-install intl
 
-
 RUN set -ex && \
     { \
             pecl install xdebug; \
     }
 
+# XML
 RUN set -ex \
     && { \
         apt-get update ; \
@@ -60,6 +60,7 @@ RUN set -ex \
         docker-php-ext-install soap; \
     }
 
+# ZIP
 RUN set -ex \
     && { \
         apt-get update ; \
@@ -67,8 +68,18 @@ RUN set -ex \
         apt-get install -y libzip-dev libzip4; \
         docker-php-ext-configure zip --with-zlib-dir=/usr; \
         docker-php-ext-install zip; \
-        rm -rf /var/lib/apt/lists/*; \
+        docker-php-ext-enable zip; \
     }
+
+# SSH
+RUN set -ex \
+    && { \
+            apt-get update ; \
+            apt-get install -y libssl-dev libssh2-1-dev git; \
+            rm -rf /var/lib/apt/lists/*; \
+            pecl install ssh2-1.2; \
+            docker-php-ext-enable ssh2; \
+       }
 
 FROM markkimsal/phusion-serverimage:0.11-debian-buster
 RUN install_clean nginx
