@@ -21,6 +21,29 @@ All images have xdebug extension available, but not enabled by default.  (use `-
 
 All images have zip, ZipArchive, and SOAP extension available (as of 7.3.26)
 
+All images have SSH2 extension available (as of 7.3.26)
+
+All images have BCMATH extension available (as of 7.3.26)
+
+|PHP Version - flavor |  7.3.26-{db} |  7.3.26-builder |
+|----------|----------|-----------------|
+| BCMATH |  X |  X |
+| Intl |  X |  X |
+| gd |  X |  X |
+| mysql |  X |  X |
+| pgsql |  o |  X |
+| mssql |  o |  X |
+| sqlite3 |  X |  X |
+| readline |  X |  X |
+| memcached (igbinary) |  X |  X |
+| xdebug |  X |  X |
+| zip |  X |  X |
+| SOAP |  X |  X |
+| SSH2 |  X |  X |
+| composer2 |    |  X |
+| deployer |    |  X |
+| nginx |  X  |   |
+
 ## PHP extension installation
 
 You can install extension just like the "official" php docker container

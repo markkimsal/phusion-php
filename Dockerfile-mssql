@@ -114,6 +114,8 @@ RUN set -ex \
         docker-php-ext-enable zip; \
     }
 
+# BC MATH
+RUN docker-php-ext-install bcmath;
 
 FROM markkimsal/phusion-serverimage:0.11-debian-buster
 RUN install_clean nginx

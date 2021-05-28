@@ -81,6 +81,9 @@ RUN set -ex \
             docker-php-ext-enable ssh2; \
        }
 
+# BC MATH
+RUN docker-php-ext-install bcmath;
+
 FROM markkimsal/phusion-serverimage:0.11-debian-buster
 RUN install_clean nginx
 
@@ -100,6 +103,8 @@ COPY --from=fpm /usr/lib/x86_64-linux-gnu/libargon*.so.1   \
 RUN ldconfig
 
 COPY runit /etc/service/
+
+RUN chown -R www-data /var/www
 
 WORKDIR /app
 CMD ["/sbin/my_init"]
