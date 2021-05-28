@@ -156,11 +156,24 @@ COPY runit /etc/service/
 
 RUN set -ex && \
     { \
-        php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"; \
-        php composer-setup.php; \
-        php -r "unlink('composer-setup.php');"; \
+        EXPECTED_CHECKSUM="$(php -r 'copy("https://composer.github.io/installer.sig", "php://stdout");')" \
+        php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" \
+        ACTUAL_CHECKSUM="$(php -r "echo hash_file('sha384', 'composer-setup.php');")" \
+        if [ "$EXPECTED_CHECKSUM" != "$ACTUAL_CHECKSUM" ] \
+        then \
+            >&2 echo 'ERROR: Invalid installer checksum' \
+            rm composer-setup.php \
+            exit 1 \
+        fi; \
+        php composer-setup.php --quiet; \
+        RESULT=$? \
         mv composer.phar /usr/local/bin/composer; \
         chmod a+x /usr/local/bin/composer; \
+        php composer-setup.php -1 --quiet; \
+        RESULT=$? \
+        mv composer.phar /usr/local/bin/composer1.10; \
+        chmod a+x /usr/local/bin/composer1.10; \
+        rm composer-setup.php; \
     }
 
 RUN set -ex && \
