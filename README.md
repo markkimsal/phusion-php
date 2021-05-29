@@ -1,3 +1,12 @@
+Nginx + PHP + Build Tools + Supervisor
+===
+phusion lemp server uses runit for a tiny supervisor.
+
+phusion lemp server uses Debian Buster for compatibility with MSSQL drivers.
+
+phusion lemp server separates build tools into a separate image for your CI pipeline.
+
+
 ```
 docker build -t markkimsal/phusion-lemp:7.3.26-mssql -f ./Dockerfile-mssql .
 docker build -t markkimsal/phusion-lemp:7.3.26-pgsql -f ./Dockerfile-pgsql .
@@ -41,6 +50,8 @@ All images have BCMATH extension available (as of 7.3.26)
 | SOAP                 | X |  X |
 | SSH2                 | X |  X |
 | nginx                | X |  X |
+| yarn                 |   |  X |
+| nodejs               |   |  X |
 | composer2            |   |  X |
 | composer1.10         |   |  X |
 | deployer             |   |  X |
