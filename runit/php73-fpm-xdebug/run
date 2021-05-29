@@ -1,0 +1,8 @@
+#!/bin/sh
+set -e
+
+set -- -F -d zend_extension=xdebug.so -d xdebug.mode=debug,develop
+
+# no chpst because php-fpm forks as www-data user according to
+# fpm.ini file settings
+exec php-fpm $@
