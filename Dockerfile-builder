@@ -211,6 +211,7 @@ RUN set -ex \
             rm -rf /var/lib/apt/lists/*; \
        }
 
+# COMPOSER
 RUN set -ex && \
     { \
         curl -LO https://deployer.org/deployer.phar; \
@@ -221,6 +222,14 @@ RUN set -ex && \
         apt-get update && apt-get install openssh-client; \
         rm -rf /var/lib/apt/lists/*; \
     }
+
+# UNZIP
+RUN set -ex && \
+    { \
+        apt-get update && apt-get install unzip; \
+        rm -rf /var/lib/apt/lists/*; \
+    }
+
 
 # MSSQL
 COPY --from=fpm /etc/odbc* /etc/
