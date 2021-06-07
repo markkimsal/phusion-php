@@ -11,6 +11,7 @@ phusion lemp server separates build tools into a separate image for your CI pipe
 docker build -t markkimsal/phusion-lemp:7.3.26-mssql -f ./Dockerfile-mssql .
 docker build -t markkimsal/phusion-lemp:7.3.26-pgsql -f ./Dockerfile-pgsql .
 docker build -t markkimsal/phusion-lemp:7.3.26-mysql -f ./Dockerfile-mysql .
+docker build -t markkimsal/phusion-lemp:7.3.26-builder -f ./Dockerfile-builder .
 ```
 
 Official PHP docker image combined with phusion/baseimage to get cron, syslog, runit, and nginx
@@ -34,30 +35,31 @@ All images have SSH2 extension available (as of 7.3.26)
 
 All images have BCMATH extension available (as of 7.3.26)
 
-|PHP Version - flavor |  7.3.26-{db} |  7.3.26-builder |
-|----------|----------|-----------------|
-| BCMATH               | X |  X |
-| Intl                 | X |  X |
-| gd                   | X |  X |
-| mysql                | X |  X |
-| pgsql                | o |  X |
-| mssql                | o |  X |
-| sqlite3              | X |  X |
-| readline             | X |  X |
-| memcached (igbinary) | X |  X |
-| xdebug               | X |  X |
-| zip                  | X |  X |
-| SOAP                 | X |  X |
-| SSH2                 | X |  X |
-| pcntl                | X |  X |
-| nginx                | X |  X |
-| yarn                 |   |  X |
-| nodejs               |   |  X |
-| composer2            |   |  X |
-| composer1.10         |   |  X |
-| deployer             |   |  X |
-| altax                |   |  X |
-| git                  |   |  X |
+|PHP Version - flavor |  7.3.28-fpm |  7.3.28-builder | 8.0.7-fpm | 8.0.7-builder |
+|----------|----------|-----------------|-----|-----|
+| BCMATH               | X |  X | X |  X |
+| Intl                 | X |  X | X |  X |
+| gd                   | X |  X | X |  X |
+| mysql                | X |  X | X |  X |
+| pgsql                | X |  X | X |  X |
+| mssql                | X |  X | X |  X |
+| dblib                | X |  X | X |  X |
+| sqlite3              | X |  X | X |  X |
+| readline             | X |  X | X |  X |
+| memcached (igbinary) | X |  X | X |  X |
+| xdebug               | X |  X | X |  X |
+| zip                  | X |  X | X |  X |
+| SOAP                 | X |  X | X |  X |
+| SSH2                 | X |  X | X |  X |
+| pcntl                | X |  X | X |  X |
+| nginx                | X |  X | X |  X |
+| yarn                 |   |  X |   |  X |
+| nodejs               |   |  X |   |  X |
+| composer2            |   |  X |   |  X |
+| composer1.10         |   |  X |   |  X |
+| deployer             |   |  X |   |  X |
+| altax                |   |  X |   |  X |
+| git                  |   |  X |   |  X |
 
 ## PHP extension installation
 
