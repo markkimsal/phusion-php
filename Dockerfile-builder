@@ -83,6 +83,9 @@ RUN set -ex \
 # BC MATH
 RUN docker-php-ext-install bcmath;
 
+# PCNTL
+RUN docker-php-ext-install pcntl
+
 # Add Microsoft repo for Microsoft ODBC Driver 13 for Linux
 
 RUN set -ex \

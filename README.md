@@ -49,6 +49,7 @@ All images have BCMATH extension available (as of 7.3.26)
 | zip                  | X |  X |
 | SOAP                 | X |  X |
 | SSH2                 | X |  X |
+| pcntl                | X |  X |
 | nginx                | X |  X |
 | yarn                 |   |  X |
 | nodejs               |   |  X |
