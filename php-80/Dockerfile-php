@@ -155,28 +155,3 @@ RUN docker-php-ext-install bcmath;
 RUN docker-php-ext-install pcntl
 
 
-FROM markkimsal/phusion-serverimage:0.11-debian-buster
-RUN install_clean nginx
-
-COPY --from=fpm /usr/local/ /usr/local/
-COPY --from=fpm /usr/lib/x86_64-linux-gnu/libargon*.so.1   \
-                /usr/lib/x86_64-linux-gnu/libxml*.so.2     \
-                /usr/lib/x86_64-linux-gnu/libicu*.so.63    \
-                /usr/lib/x86_64-linux-gnu/libsodium*.so.23 \
-                /usr/lib/x86_64-linux-gnu/libsql*.so.0     \
-                /usr/lib/x86_64-linux-gnu/libpng*.so       \
-                /usr/lib/x86_64-linux-gnu/libzip*.so       \
-                /usr/lib/x86_64-linux-gnu/libjpeg*.so      \
-                /usr/lib/x86_64-linux-gnu/libfreet*.so     \
-                /usr/lib/x86_64-linux-gnu/libmemcached*.so \
-                /usr/lib/x86_64-linux-gnu/libonig*.so*     \
-                /usr/lib/x86_64-linux-gnu/
-
-RUN ldconfig
-
-COPY runit /etc/service/
-
-RUN chown -R www-data /var/www
-
-WORKDIR /app
-CMD ["/sbin/my_init"]
