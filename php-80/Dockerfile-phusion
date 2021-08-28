@@ -1,4 +1,4 @@
-FROM markkimsal/php:8.0.7-fpm as fpm
+FROM markkimsal/php:8.0.10-fpm as fpm
 FROM markkimsal/phusion-serverimage:0.11-debian-buster
 
 RUN install_clean nginx

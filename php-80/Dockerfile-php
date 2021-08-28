@@ -1,4 +1,4 @@
-FROM php:8.0.7-fpm-buster as fpm
+FROM php:8.0.10-fpm-buster as fpm
 
 
 # MYSQL
