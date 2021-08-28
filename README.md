@@ -34,7 +34,7 @@ All images have SSH2 extension available (as of 7.3.26)
 
 All images have BCMATH extension available (as of 7.3.26)
 
-|PHP Version - flavor |  7.3.28-fpm |  7.3.28-builder | 8.0.7-fpm | 8.0.7-builder |
+|PHP Version - flavor |  7.3-fpm |  7.3-builder | 8.0-fpm | 8.0-builder |
 |----------|----------|-----------------|-----|-----|
 | BCMATH               | X |  X | X |  X |
 | Intl                 | X |  X | X |  X |
