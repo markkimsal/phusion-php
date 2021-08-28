@@ -1,4 +1,4 @@
-FROM php:7.3.26-fpm-buster as fpm
+FROM php:7.3.30-fpm-buster as fpm
 
 RUN docker-php-ext-install mysqli pdo_mysql
 
