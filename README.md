@@ -8,14 +8,13 @@ phusion lemp server separates build tools into a separate image for your CI pipe
 
 
 ```
-docker build -t markkimsal/phusion-lemp:7.3.26-mssql -f ./Dockerfile-mssql .
-docker build -t markkimsal/phusion-lemp:7.3.26-pgsql -f ./Dockerfile-pgsql .
-docker build -t markkimsal/phusion-lemp:7.3.26-mysql -f ./Dockerfile-mysql .
-docker build -t markkimsal/phusion-lemp:7.3.26-builder -f ./Dockerfile-builder .
+sh ./make-73.sh
+sh ./make-80.sh
 ```
 
 Official PHP docker image combined with phusion/baseimage to get cron, syslog, runit, and nginx
 
+Builder variant now has nvm 0.38.0 and nodejs 14.x.
 
 MSSQL image now with pdo_sqlsrv and pdo_dblib.
 
@@ -54,7 +53,7 @@ All images have BCMATH extension available (as of 7.3.26)
 | pcntl                | X |  X | X |  X |
 | nginx                | X |  X | X |  X |
 | yarn                 |   |  X |   |  X |
-| nodejs               |   |  X |   |  X |
+| nodejs-14.x          |   |  X |   |  X |
 | composer2            |   |  X |   |  X |
 | composer1.10         |   |  X |   |  X |
 | deployer             |   |  X |   |  X |
