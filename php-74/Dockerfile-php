@@ -1,0 +1,157 @@
+FROM php:7.4.23-fpm-buster as fpm
+
+
+# MYSQL
+RUN docker-php-ext-install pdo pdo_mysql mysqli
+
+
+# PGSQL
+RUN set -ex \
+    && { \
+			apt-get update ; \
+            apt-get install -y libpq-dev; \
+            rm -rf /var/lib/apt/lists/*; \
+            docker-php-ext-install pdo pdo_pgsql; \
+       }
+
+
+# MSSQL
+# Add Microsoft repo for Microsoft ODBC Driver 13 for Linux
+RUN apt-get update \
+    && apt-get install -y apt-utils gnupg curl build-essential libaio1 software-properties-common locales iputils-ping --no-install-recommends \
+    && apt-get install -y \
+    apt-transport-https \
+    && curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add - \
+    && curl https://packages.microsoft.com/config/ubuntu/18.04/prod.list > /etc/apt/sources.list.d/mssql-release.list
+
+# Install Dependencies
+RUN apt-get update \
+    && ACCEPT_EULA=Y apt-get install -y \
+    unixodbc \
+    unixodbc-dev \
+    libgss3 \
+    odbcinst \
+    msodbcsql17 \
+    locales \
+	freetds-bin \
+	freetds-dev \
+	freetds-common \
+	libct4 \
+	libsybdb5 \
+	tdsodbc \
+    && echo "en_US.UTF-8 UTF-8" > /etc/locale.gen && locale-gen
+
+
+RUN docker-php-ext-configure pdo_dblib \
+	   --with-libdir=/lib/x86_64-linux-gnu/  \
+    && docker-php-ext-install pdo_dblib
+
+# Install pdo_sqlsrv and sqlsrv from PECL. Replace pdo_sqlsrv-4.1.8preview with preferred version.
+RUN pecl install pdo_sqlsrv sqlsrv \
+    && docker-php-ext-enable pdo_sqlsrv sqlsrv
+
+
+
+## ZIP
+RUN set -ex \
+    && { \
+        apt-get update ; \
+        apt-get install -y libzip-dev libzip4; \
+        rm -rf /var/lib/apt/lists/*; \
+        docker-php-ext-configure zip --with-zip; \
+        docker-php-ext-install zip; \
+    }
+
+## GD
+RUN set -ex \
+    && { \
+			apt-get update ; \
+            apt-get install -y libpng-dev libjpeg-dev libfreetype6-dev libwebp-dev; \
+            rm -rf /var/lib/apt/lists/*; \
+            docker-php-ext-configure gd \
+            --with-freetype \
+            --with-jpeg \
+            --with-webp; \
+            docker-php-ext-install gd; \
+       }
+
+
+## OPCACHE
+RUN set -ex \
+    && { \
+    		docker-php-ext-enable opcache; \
+	}
+
+## memcached
+RUN set -ex \
+    && { \
+            apt-get update ; \
+            apt-get install -y libmemcached-dev; \
+            rm -rf /var/lib/apt/lists/*; \
+       }
+
+RUN set -ex && \
+    { \
+            pecl install igbinary && \
+            pecl install --nobuild memcached && \
+            cd "$(pecl config-get temp_dir)/memcached" && \
+            phpize && \
+            ./configure --enable-memcached-igbinary && \
+            make -j$(nproc) && \
+            make install; \
+    } && \
+    docker-php-ext-enable igbinary memcached
+
+## INTL - money_format
+RUN set -ex \
+    && { \
+            apt-get update ; \
+            apt-get install -y zlib1g-dev libicu-dev; \
+            rm -rf /var/lib/apt/lists/*; \
+            docker-php-ext-configure intl \
+               && docker-php-ext-install intl; \
+       }
+
+
+## XDEBUG
+RUN set -ex && \
+    { \
+            pecl install xdebug; \
+    }
+
+# XML
+RUN set -ex \
+    && { \
+        apt-get update ; \
+        apt-get install -y libxml2-dev; \
+        rm -rf /var/lib/apt/lists/*; \
+        docker-php-ext-install soap; \
+    }
+
+
+## SOAP
+RUN set -ex \
+    && { \
+        apt-get update ; \
+        apt-get install -y libxml2-dev; \
+        rm -rf /var/lib/apt/lists/*; \
+        docker-php-ext-install soap; \
+    }
+
+# SSH
+RUN set -ex \
+    && { \
+            apt-get update ; \
+            apt-get install -y libssl-dev libssh2-1-dev git; \
+            rm -rf /var/lib/apt/lists/*; \
+            pecl install ssh2-1.3.1; \
+            docker-php-ext-enable ssh2; \
+       }
+
+# BC MATH
+RUN docker-php-ext-install bcmath;
+
+# PCNTL
+RUN docker-php-ext-install pcntl
+
+
