@@ -34,31 +34,31 @@ All images have SSH2 extension available (as of 7.3.26)
 
 All images have BCMATH extension available (as of 7.3.26)
 
-|PHP Version - flavor |  7.3-fpm |  7.3-builder | 8.0-fpm | 8.0-builder |
-|----------|----------|-----------------|-----|-----|
-| BCMATH               | X |  X | X |  X |
-| Intl                 | X |  X | X |  X |
-| gd                   | X |  X | X |  X |
-| mysql                | X |  X | X |  X |
-| pgsql                | X |  X | X |  X |
-| mssql                | X |  X | X |  X |
-| dblib                | X |  X | X |  X |
-| sqlite3              | X |  X | X |  X |
-| readline             | X |  X | X |  X |
-| memcached (igbinary) | X |  X | X |  X |
-| xdebug               | X |  X | X |  X |
-| zip                  | X |  X | X |  X |
-| SOAP                 | X |  X | X |  X |
-| SSH2                 | X |  X | X |  X |
-| pcntl                | X |  X | X |  X |
-| nginx                | X |  X | X |  X |
-| yarn                 |   |  X |   |  X |
-| nodejs-14.x          |   |  X |   |  X |
-| composer2            |   |  X |   |  X |
-| composer1.10         |   |  X |   |  X |
-| deployer             |   |  X |   |  X |
-| altax                |   |  X |   |  X |
-| git                  |   |  X |   |  X |
+|PHP Version - flavor |  7.3-fpm |  7.3-builder | 7.4-fpm | 7.4-builder | 8.0-fpm | 8.0-builder |
+|----------|----------|-----------------|-----|-----|-----|-----|
+| BCMATH               | X |  X | X | X | X |  X |
+| Intl                 | X |  X | X | X | X |  X |
+| gd                   | X |  X | X | X | X |  X |
+| mysql                | X |  X | X | X | X |  X |
+| pgsql                | X |  X | X | X | X |  X |
+| mssql                | X |  X | X | X | X |  X |
+| dblib                | X |  X | X | X | X |  X |
+| sqlite3              | X |  X | X | X | X |  X |
+| readline             | X |  X | X | X | X |  X |
+| memcached (igbinary) | X |  X | X | X | X |  X |
+| xdebug               | X |  X | X | X | X |  X |
+| zip                  | X |  X | X | X | X |  X |
+| SOAP                 | X |  X | X | X | X |  X |
+| SSH2                 | X |  X | X | X | X |  X |
+| pcntl                | X |  X | X | X | X |  X |
+| nginx                | X |  X | X | X | X |  X |
+| yarn                 |   |  X |   | X |   |  X |
+| nodejs-14.x          |   |  X |   | X |   |  X |
+| composer2            |   |  X |   | X |   |  X |
+| composer1.10         |   |  X |   | X |   |  X |
+| deployer             |   |  X |   | X |   |  X |
+| altax                |   |  X |   | X |   |  X |
+| git                  |   |  X |   | X |   |  X |
 
 ## PHP extension installation
 
