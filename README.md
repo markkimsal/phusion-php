@@ -9,6 +9,7 @@ phusion lemp server separates build tools into a separate image for your CI pipe
 
 ```
 sh ./make-73.sh
+sh ./make-74.sh
 sh ./make-80.sh
 ```
 
