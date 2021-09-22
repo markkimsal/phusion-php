@@ -1,11 +1,12 @@
 Nginx + PHP + Build Tools + Supervisor
 ===
-phusion lemp server uses runit for a tiny supervisor.
+... For production, dev, and CI pipelines.
 
-phusion lemp server uses Debian Buster for compatibility with MSSQL drivers.
+phusion-php uses runit for a tiny supervisor.
 
-phusion lemp server separates build tools into a separate image for your CI pipeline.
+phusion-php uses Debian Buster for compatibility with MSSQL drivers.
 
+phusion-php separates build tools into a separate image for your CI pipeline.
 
 ```
 sh ./make-73.sh
@@ -15,6 +16,13 @@ sh ./make-80.sh
 
 Official PHP docker image combined with phusion/baseimage to get cron, syslog, runit, and nginx
 
+UID and www-data
+===
+You can now set the www-data user id and group id at runtime with environment variables WWWUID and WWWGID.
+See 'start-container' for more details.  Inspired by laravel sail.
+
+Image Details
+===
 Builder variant now has nvm 0.38.0 and nodejs 14.x.
 
 MSSQL image now with pdo_sqlsrv and pdo_dblib.
