@@ -33,6 +33,10 @@ COPY --from=fpm /usr/lib/x86_64-linux-gnu/libpq.so.5 \
 RUN ldconfig
 
 COPY runit /etc/service/
+COPY start-container /usr/local/bin/start-container
+RUN chmod a+x /usr/local/bin/start-container
+RUN chown -R www-data /var/www
+RUN mkdir /app && chown www-data /app
 
 RUN set -ex && \
     { \
@@ -95,4 +99,4 @@ COPY --from=fpm /etc/ODBC* /etc/
 
 
 WORKDIR /app
-CMD ["/sbin/my_init"]
+CMD ["/usr/local/bin/start-container"]

@@ -147,6 +147,8 @@ COPY --from=fpm /etc/odbc* /etc/
 COPY --from=fpm /etc/ODBC* /etc/
 
 COPY runit /etc/service/
+COPY start-container /usr/local/bin/start-container
+RUN chmod a+x /usr/local/bin/start-container
 
 WORKDIR /app
-CMD ["/sbin/my_init"]
+CMD ["/usr/local/bin/start-container"]

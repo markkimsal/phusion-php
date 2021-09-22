@@ -106,8 +106,10 @@ COPY --from=fpm /usr/lib/x86_64-linux-gnu/libargon*.so.1   \
 RUN ldconfig
 
 COPY runit /etc/service/
+COPY start-container /usr/local/bin/start-container
+RUN chmod a+x /usr/local/bin/start-container
 
 RUN chown -R www-data /var/www
 
 WORKDIR /app
-CMD ["/sbin/my_init"]
+CMD ["/usr/local/bin/start-container"]

@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+
+if [ ! -z "$WWWUID" ]; then
+    usermod -u $WWWUID www-data;
+    chown -R www-data /var/www;
+    chown www-data /app;
+fi
+
+if [ ! -z "$WWWGID" ]; then
+    groupmod -g $WWWGID www-data
+    chgrp -R www-data /var/www
+    chgrp www-data /app;
+fi
+/sbin/my_init

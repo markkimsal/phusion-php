@@ -238,7 +238,9 @@ RUN set -ex && \
 COPY --from=fpm /etc/odbc* /etc/
 COPY --from=fpm /etc/ODBC* /etc/
 
+COPY start-container /usr/local/bin/start-container
+RUN chmod a+x /usr/local/bin/start-container
 RUN chown -R www-data /var/www
 
 WORKDIR /app
-CMD ["/sbin/my_init"]
+CMD ["/usr/local/bin/start-container"]

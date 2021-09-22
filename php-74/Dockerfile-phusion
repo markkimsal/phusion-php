@@ -2,6 +2,11 @@ FROM markkimsal/php:7.4.23-fpm as fpm
 FROM markkimsal/phusion-serverimage:0.11-debian-buster
 
 RUN install_clean nginx
+COPY runit /etc/service/
+COPY start-container /usr/local/bin/start-container
+RUN chmod a+x /usr/local/bin/start-container
+RUN chown -R www-data /var/www
+RUN mkdir /app && chown www-data /app
 
 COPY --from=fpm /usr/local/ /usr/local/
 COPY --from=fpm /usr/lib/x86_64-linux-gnu/libargon*.so.1   \
@@ -17,19 +22,19 @@ COPY --from=fpm /usr/lib/x86_64-linux-gnu/libargon*.so.1   \
                 /usr/lib/x86_64-linux-gnu/libonig.so.5.0.0 \
                 /usr/lib/x86_64-linux-gnu/
 
+#MSSQL
 COPY --from=fpm /usr/lib/x86_64-linux-gnu/libodbc.so.2     \
                 /usr/lib/x86_64-linux-gnu/libodbcinst.so.2 \
                 /usr/lib/x86_64-linux-gnu/libsybdb.so.5    \
                 /usr/lib/x86_64-linux-gnu/
 
+COPY --from=fpm /opt/microsoft/ /opt/microsoft/
+RUN echo '/opt/microsoft/msodbcsql17/lib64/' > /etc/ld.so.conf.d/msodbcsql.conf
+
 COPY --from=fpm /usr/lib/x86_64-linux-gnu/libpq.so.5 \
                 /usr/lib/x86_64-linux-gnu/
-R
+
 RUN ldconfig
 
-COPY runit /etc/service/
-
-RUN chown -R www-data /var/www
-
 WORKDIR /app
-CMD ["/sbin/my_init"]
+CMD ["/usr/local/bin/start-container"]

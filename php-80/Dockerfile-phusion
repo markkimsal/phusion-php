@@ -2,6 +2,11 @@ FROM markkimsal/php:8.0.10-fpm as fpm
 FROM markkimsal/phusion-serverimage:0.11-debian-buster
 
 RUN install_clean nginx
+COPY runit /etc/service/
+COPY start-container /usr/local/bin/start-container
+RUN chmod a+x /usr/local/bin/start-container
+RUN chown -R www-data /var/www
+RUN mkdir /app && chown www-data /app
 
 COPY --from=fpm /usr/local/ /usr/local/
 COPY --from=fpm /usr/lib/x86_64-linux-gnu/libargon*.so.1   \
@@ -30,9 +35,5 @@ COPY --from=fpm /usr/lib/x86_64-linux-gnu/libpq.so.5 \
                 /usr/lib/x86_64-linux-gnu/
 RUN ldconfig
 
-COPY runit /etc/service/
-
-RUN chown -R www-data /var/www
-
 WORKDIR /app
-CMD ["/sbin/my_init"]
+CMD ["/usr/local/bin/start-container"]
