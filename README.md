@@ -1,6 +1,14 @@
-Nginx + PHP + Build Tools + Supervisor
+PHP For Local Dev, CD Pipeline, Production Deployment
 ===
-... For production, dev, and CI pipelines.
+Xdebug for local dev
+
+Git, yarn, npm, ssh for CI/CD pipeline
+
+Nginx, supervisor, and syslog for production
+
+
+Nginx + PHP + Build Tools + Supervisor
+---
 
 phusion-php uses runit for a tiny supervisor.
 
@@ -17,12 +25,12 @@ sh ./make-80.sh
 Official PHP docker image combined with phusion/baseimage to get cron, syslog, runit, and nginx
 
 UID and www-data
-===
+---
 You can now set the www-data user id and group id at runtime with environment variables WWWUID and WWWGID.
 See 'start-container' for more details.  Inspired by laravel sail.
 
 Image Details
-===
+---
 Builder variant now has nvm 0.38.0 and nodejs 14.x.
 
 MSSQL image now with pdo_sqlsrv and pdo_dblib.
@@ -60,6 +68,7 @@ All images have BCMATH extension available (as of 7.3.26)
 | SOAP                 | X |  X | X | X | X |  X |
 | SSH2                 | X |  X | X | X | X |  X |
 | pcntl                | X |  X | X | X | X |  X |
+| lib sodium           | X |  X | X | X | X |  X |
 | nginx                | X |  X | X | X | X |  X |
 | yarn                 |   |  X |   | X |   |  X |
 | nodejs-14.x          |   |  X |   | X |   |  X |
@@ -68,17 +77,10 @@ All images have BCMATH extension available (as of 7.3.26)
 | deployer             |   |  X |   | X |   |  X |
 | altax                |   |  X |   | X |   |  X |
 | git                  |   |  X |   | X |   |  X |
+| unzip                |   |  X |   | X |   |  X |
 
-## PHP extension installation
 
-You can install extension just like the "official" php docker container
-
-```
-FROM markkimsal/phuion-lemp:7.3.26-fpm-buster
-
-RUN docker-php-ext-install mysqli pdo_mysql \
-    && docker-php-ext-enable mysqli pdo_mysql
-```
+PHP 7.3 images have updated timezone database for 2021.  (does your distro have updated Samoan DST?)
 
 
 ## Nginx Vhost Sample
@@ -134,6 +136,9 @@ services:
 
 
 ## MSSQL Sqlsrv extension
+This is already included in the phusion-php images.  This is only for historical reasons and syntax reference.
+
+
 Mssql gives .deb packages for installing ODBC and sqlsrv extension on PHP.  This means you need Debian/Ubuntu instead of alpine.
 ```
 FROM markkimsal/php-nginx-phusion:7.3-fpm
