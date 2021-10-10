@@ -86,6 +86,14 @@ RUN docker-php-ext-install bcmath;
 # PCNTL
 RUN docker-php-ext-install pcntl
 
+# TIMEZONEDB
+RUN set -ex && \
+    { \
+            pecl install timezonedb; \
+            docker-php-ext-enable timezonedb; \
+    }
+
+
 # Add Microsoft repo for Microsoft ODBC Driver 13 for Linux
 
 RUN set -ex \
@@ -130,7 +138,7 @@ RUN pecl install pdo_sqlsrv sqlsrv \
 
 
 FROM markkimsal/phusion-serverimage:0.11-debian-buster
-RUN install_clean nginx
+RUN install_clean nginx unzip
 
 COPY --from=fpm /usr/local/ /usr/local/
 COPY --from=fpm /usr/lib/x86_64-linux-gnu/libargon*.so.1   \
