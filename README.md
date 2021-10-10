@@ -16,18 +16,13 @@ phusion-php uses Debian Buster for compatibility with MSSQL drivers.
 
 phusion-php separates build tools into a separate image for your CI pipeline.
 
-```
-sh ./make-73.sh
-sh ./make-74.sh
-sh ./make-80.sh
-```
-
-Official PHP docker image combined with phusion/baseimage to get cron, syslog, runit, and nginx
+phusion-php uses phusion/baseimage to get cron, syslog, and runit.
 
 UID and www-data
 ---
 You can now set the www-data user id and group id at runtime with environment variables WWWUID and WWWGID.
 See 'start-container' for more details.  Inspired by laravel sail.
+
 
 Image Details
 ---
@@ -82,8 +77,18 @@ All images have BCMATH extension available (as of 7.3.26)
 
 PHP 7.3 images have updated timezone database for 2021.  (does your distro have updated Samoan DST?)
 
+How to Build
+---
 
-## Nginx Vhost Sample
+```
+sh ./make-73.sh
+sh ./make-74.sh
+sh ./make-80.sh
+```
+
+
+Nginx Vhost Sample
+----
 
 Pass PHP requests to localhost 9000.  This assumes everything is copied or mounted to `/app`
 
