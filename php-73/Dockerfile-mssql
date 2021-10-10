@@ -120,6 +120,13 @@ RUN docker-php-ext-install bcmath;
 # PCNTL
 RUN docker-php-ext-install pcntl
 
+# TIMEZONEDB
+RUN set -ex && \
+    { \
+            pecl install timezonedb; \
+            docker-php-ext-enable timezonedb; \
+    }
+
 FROM markkimsal/phusion-serverimage:0.11-debian-buster
 RUN install_clean nginx
 
