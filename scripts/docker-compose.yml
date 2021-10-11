@@ -12,6 +12,7 @@ services:
         volumes:
             - '.:/app'
             - './config/docker/nginx.vhost.conf:/etc/nginx/conf.d/container-vhost.conf'
+            #- './config/docker/xdebug.ini/:/usr/local/etc/php/conf.d/xdebug.ini'
 
     mysql:
         image: 'mysql:8'
