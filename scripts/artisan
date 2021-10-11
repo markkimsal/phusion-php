@@ -1,0 +1,13 @@
+#!/bin/bash
+
+if [ -f ./.env ]; then
+    source ./.env
+fi
+
+APP_SERVICE=${APP_SERVICE:-"webapp"}
+
+docker-compose exec \
+    -e "ENV_KEY=${ENV_KEY}" \
+    -e "XDEBUG_TRIGGER=1" \
+    "$APP_SERVICE" \
+    php artisan "$@"

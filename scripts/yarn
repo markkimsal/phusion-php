@@ -1,0 +1,5 @@
+#!/bin/bash
+
+source .env
+
+docker run --rm -ti -v $(pwd):/app -w /app ${YARN_IMAGE:-node:14.17.5-alpine} yarn $@

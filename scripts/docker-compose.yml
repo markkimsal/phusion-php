@@ -1,0 +1,79 @@
+---
+version: '3.4'
+
+services:
+    webapp:
+        image: 'markkimsal/phusion-php:8.0-fpm'
+        environment:
+            WWWUID: ${WWWUID:-1000}
+            WWWGID: ${WWWGID:-1000}
+        ports:
+            - ${FORWARD_APP_PORT:-8080}:8080
+        volumes:
+            - '.:/app'
+            - './config/docker/nginx.vhost.conf:/etc/nginx/conf.d/container-vhost.conf'
+
+    mysql:
+        image: 'mysql:8'
+        environment:
+            MYSQL_ROOT_PASSWORD: '${DB_PASSWORD:-secret}'
+            MYSQL_DATABASE: '${DB_DATABASE:-webapp_dev}'
+            MYSQL_USER: '${DB_USERNAME:-sail}'
+            MYSQL_PASSWORD: '${DB_PASSWORD:-secret}'
+            MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
+        volumes:
+            - 'mysql80_data:/var/lib/mysql'
+        healthcheck:
+           test: ["CMD", "mysqladmin", "-u", "root", "-psecret", "ping"]
+
+    # uncomment if you want redis
+    # redis:
+    #     image: 'redis:alpine'
+    #     ports:
+    #         - '${FORWARD_REDIS_PORT:-6379}:6379'
+    #     volumes:
+    #         - 'redis_data:/data'
+
+    # Uncommet if you want mailhog instead of log mail driver
+    # mailhog:
+    #     image: 'mailhog/mailhog'
+    #     ports:
+    #         - 8125:1025
+    #         - 8025:8025
+
+    # mssql:
+    #     image: mcr.microsoft.com/mssql/server:2019-CU9-ubuntu-16.04
+    #     environment:
+    #         ACCEPT_EULA: 'Y'
+    #         MSSQL_SA_PASSWORD: '${DB_PASSWORD:-TestP@55}'
+    #         TZ: 'America/New_York'
+    #     volumes:
+    #       - mssql2019_data:/var/opt/mssql/
+
+    # s3:
+    #     image: 'minio/minio'
+    #     ports:
+    #         - 9000:9000
+    #     volumes:
+    #         - minio_data:/data
+    #     environment:
+    #         MINIO_ACCESS_KEY: '${AWS_ACCESS_KEY_ID:-minioadmin}'
+    #         MINIO_SECRET_KEY: '${AWS_SECRET_ACCESS_KEY:-miniosecret}'
+    #     command: server /data
+
+    # samba:
+    #     image: dperson/samba
+    #     ports:
+    #         - 9139:139
+    #         - 9445:445
+    #     environment:
+    #         - 'TZ=EST5EDT'
+    #     command: |
+    #         -p
+    #         -u "${SMB_USER:-smbuser1};${SMB_PASS:-testpass1}"
+    #         -s "${SMB_SHARE:-videos};/sharedata;yes;no;no;${SMB_USER:-smbuser1}"
+volumes:
+    mssql2019_data:
+    mysql80_data:
+    minio_data:
+    redis_data:
