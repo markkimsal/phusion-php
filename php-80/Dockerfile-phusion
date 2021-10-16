@@ -1,5 +1,8 @@
 FROM markkimsal/php:8.0.10-fpm as fpm
 FROM markkimsal/phusion-serverimage:0.11-debian-buster
+ARG WITH_SAMBA
+ARG WITH_SQLSRV
+ARG WITH_TENSOR
 
 RUN install_clean nginx
 COPY runit /etc/service/
@@ -20,19 +23,34 @@ COPY --from=fpm /usr/lib/x86_64-linux-gnu/libargon*.so.1   \
                 /usr/lib/x86_64-linux-gnu/libfreet*.so     \
                 /usr/lib/x86_64-linux-gnu/libmemcached*.so \
                 /usr/lib/x86_64-linux-gnu/libonig.so.5.0.0 \
+                /usr/lib/x86_64-linux-gnu/libpq.so.5 \
                 /usr/lib/x86_64-linux-gnu/
 
 #MSSQL
-COPY --from=fpm /usr/lib/x86_64-linux-gnu/libodbc.so.2     \
-                /usr/lib/x86_64-linux-gnu/libodbcinst.so.2 \
-                /usr/lib/x86_64-linux-gnu/libsybdb.so.5    \
+COPY --from=fpm /optionallibs/* \
                 /usr/lib/x86_64-linux-gnu/
 
+
+#MSSQL
+#COPY --from=fpm /usr/lib/x86_64-linux-gnu/libodbc*.so.2     \
+#                /usr/lib/x86_64-linux-gnu/libodbcinst*.so.2 \
+#                /usr/lib/x86_64-linux-gnu/libsybdb*.so.5    \
+#                /usr/lib/x86_64-linux-gnu/
+#
 COPY --from=fpm /opt/microsoft/ /opt/microsoft/
 RUN echo '/opt/microsoft/msodbcsql17/lib64/' > /etc/ld.so.conf.d/msodbcsql.conf
 
-COPY --from=fpm /usr/lib/x86_64-linux-gnu/libpq.so.5 \
-                /usr/lib/x86_64-linux-gnu/
+
+# TENSOR
+#COPY --from=fpm /usr/lib/x86_64-linux-gnu/libopenblas*.so.0   \
+#                /usr/lib/x86_64-linux-gnu/libblas*.so.3    \
+#                /usr/lib/x86_64-linux-gnu/liblapacke*.so.3    \
+#                /usr/lib/x86_64-linux-gnu/liblapack*.so.3    \
+#                /usr/lib/x86_64-linux-gnu/libgfortran*.so.5   \
+#                /usr/lib/x86_64-linux-gnu/libquadmath*.so.0   \
+#                /usr/lib/x86_64-linux-gnu/libtmglib*.so.3   \
+#                /usr/lib/x86_64-linux-gnu/
+
 RUN ldconfig
 
 WORKDIR /app

@@ -1,9 +1,10 @@
 FROM php:8.0.10-fpm-buster as fpm
-
+ARG WITH_TENSOR=""
+ARG WITH_SAMBA=""
+ARG WITH_SQLSRV=""
 
 # MYSQL
 RUN docker-php-ext-install pdo pdo_mysql mysqli
-
 
 # PGSQL
 RUN set -ex \
@@ -17,39 +18,48 @@ RUN set -ex \
 
 # MSSQL
 # Add Microsoft repo for Microsoft ODBC Driver 13 for Linux
-RUN apt-get update \
-    && apt-get install -y apt-utils gnupg curl build-essential libaio1 software-properties-common locales iputils-ping --no-install-recommends \
-    && apt-get install -y \
-    apt-transport-https \
-    && curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add - \
-    && curl https://packages.microsoft.com/config/ubuntu/18.04/prod.list > /etc/apt/sources.list.d/mssql-release.list
+RUN set -ex \
+	&&  if [ ! -z "$WITH_SQLSRV" ] ; then { \
+		apt-get update ; \
+		apt-get install -y apt-utils gnupg curl build-essential libaio1 software-properties-common locales iputils-ping --no-install-recommends; \
+		apt-get install -y apt-transport-https; \
+		curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add - ; \
+		curl https://packages.microsoft.com/config/ubuntu/18.04/prod.list > /etc/apt/sources.list.d/mssql-release.list; \
+	}; fi
 
+# MSSQL
 # Install Dependencies
-RUN apt-get update \
-    && ACCEPT_EULA=Y apt-get install -y \
-    unixodbc \
-    unixodbc-dev \
-    libgss3 \
-    odbcinst \
-    msodbcsql17 \
-    locales \
-	freetds-bin \
-	freetds-dev \
-	freetds-common \
-	libct4 \
-	libsybdb5 \
-	tdsodbc \
-    && echo "en_US.UTF-8 UTF-8" > /etc/locale.gen && locale-gen
+RUN set -ex \
+	&&  if [ ! -z "$WITH_SQLSRV" ] ; then { \
+		apt-get update; \
+		ACCEPT_EULA=Y apt-get install -y \
+		unixodbc \
+		unixodbc-dev \
+		libgss3 \
+		odbcinst \
+		msodbcsql17 \
+		locales \
+		freetds-bin \
+		freetds-dev \
+		freetds-common \
+		libct4 \
+		libsybdb5 \
+		tdsodbc \
+		&& echo "en_US.UTF-8 UTF-8" > /etc/locale.gen && locale-gen; \
+	}; fi
 
 
-RUN docker-php-ext-configure pdo_dblib \
-	   --with-libdir=/lib/x86_64-linux-gnu/  \
-    && docker-php-ext-install pdo_dblib
-
+# MSSQL
+# Enable extensions
 # Install pdo_sqlsrv and sqlsrv from PECL. Replace pdo_sqlsrv-4.1.8preview with preferred version.
-RUN pecl install pdo_sqlsrv sqlsrv \
-    && docker-php-ext-enable pdo_sqlsrv sqlsrv
-
+RUN set -ex \
+	&&  if [ ! -z "$WITH_SQLSRV" ] ; then { \
+		docker-php-ext-configure pdo_dblib \
+		--with-libdir=/lib/x86_64-linux-gnu/;  \
+		docker-php-ext-install pdo_dblib; \
+		pecl install pdo_sqlsrv sqlsrv; \
+		docker-php-ext-enable pdo_sqlsrv sqlsrv; \
+	}; fi
 
 
 ## ZIP
@@ -163,4 +173,37 @@ RUN set -ex \
         pecl install libsodium; \
         docker-php-ext-enable sodium; \
    }
+
+RUN set -ex \
+	&&  if [ ! -z "$WITH_SQLSRV" ] ; then \
+		cp /usr/lib/x86_64-linux-gnu/libodbc*.so.2      \
+			/usr/lib/x86_64-linux-gnu/libodbcinst*.so.2 \
+			/usr/lib/x86_64-linux-gnu/libsybdb*.so.5    \
+			/optionallibs/ \
+	;else \
+		mkdir /opt/microsoft; \
+		mkdir /etc/odbc; \
+		mkdir /etc/ODBC; \
+		mkdir /optionallibs \
+	;fi
+
+
+# TENSOR
+RUN set -ex \
+	&&  if [ ! -z "$WITH_TENSOR" ] ; then \
+        apt-get update ; \
+        apt-get install -y libopenblas-dev liblapacke-dev re2c gfortran; \
+        pecl install tensor; \
+        docker-php-ext-enable tensor; \
+		cp /usr/lib/x86_64-linux-gnu/libopenblas.so.0        \
+				/usr/lib/x86_64-linux-gnu/libblas.so.3       \
+				/usr/lib/x86_64-linux-gnu/liblapacke.so.3    \
+				/usr/lib/x86_64-linux-gnu/liblapack.so.3     \
+				/usr/lib/x86_64-linux-gnu/libgfortran.so.5   \
+				/usr/lib/x86_64-linux-gnu/libquadmath.so.0   \
+				/usr/lib/x86_64-linux-gnu/libtmglib.so.3     \
+				/optionallibs/ \
+	;else \
+		mkdir /optionallibs \
+	;fi
 
