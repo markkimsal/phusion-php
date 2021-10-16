@@ -90,10 +90,10 @@ RUN docker-php-ext-install pcntl
 RUN set -ex \
     && { \
         apt-get update ; \
-        apt-get install -y libsodium-dev libssodium23; \
+        apt-get install -y libsodium-dev libsodium23; \
         rm -rf /var/lib/apt/lists/*; \
         pecl install libsodium; \
-        docker-php-ext-enable libsodium; \
+        docker-php-ext-enable sodium; \
    }
 
 # TIMEZONEDB
