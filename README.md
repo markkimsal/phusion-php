@@ -59,8 +59,6 @@ All images have BCMATH extension available (as of 7.3.26)
 | gd                   | X |  X | X | X | X |  X |
 | mysql                | X |  X | X | X | X |  X |
 | pgsql                | X |  X | X | X | X |  X |
-| mssql                | X |  X | X | X | X |  X |
-| dblib                | X |  X | X | X | X |  X |
 | sqlite3              | X |  X | X | X | X |  X |
 | readline             | X |  X | X | X | X |  X |
 | memcached (igbinary) | X |  X | X | X | X |  X |
@@ -70,6 +68,8 @@ All images have BCMATH extension available (as of 7.3.26)
 | SSH2                 | X |  X | X | X | X |  X |
 | pcntl                | X |  X | X | X | X |  X |
 | lib sodium           | X |  X | X | X | X |  X |
+| mssql                | X |  X | X | X |   |    |
+| dblib                | X |  X | X | X |   |    |
 | nginx                | X |  X | X | X | X |  X |
 | yarn                 |   |  X |   | X |   |  X |
 | nodejs-14.x          |   |  X |   | X |   |  X |
@@ -82,6 +82,17 @@ All images have BCMATH extension available (as of 7.3.26)
 
 
 PHP 7.3 images have updated timezone database for 2021.  (does your distro have updated Samoan DST?)
+
+
+Rare extensions (Tensor, Samba)
+---
+These niche extension contribute considerable size to the image.  If you need them, set the flag in the make file and you will
+get a custom image name like `markkimsal/phusion-php-{ext}-{ext}:7.4-fpm`.
+
+MSSQL
+---
+To avoid licensing issues, MSSQL and DBLIB have been moved to a custom image `markkimsal/phusion-php-mssql:8.0-fpm`.
+You can build your own by setting WITH_SQLSRV="1" in the `make-80.sh` file.
 
 How to Build
 ---
