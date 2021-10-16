@@ -103,6 +103,15 @@ sh ./make-74.sh
 sh ./make-80.sh
 ```
 
+How to Build with Tensor extension (machine-learning)
+---
+```
+TENSOR=1 bash ./make-80.sh
+```
+Your resulting image will be named `markkimsal/phusion-php-tensor:8.0-fpm`.
+There will be an additional image with CI/CD tools like git and node called `markkimsal/phusion-php-tensor:8.0-builder`.
+
+See [https://rubixml.com/](https://rubixml.com/) for more information.
 
 Nginx Vhost Sample
 ----
