@@ -113,6 +113,27 @@ There will be an additional image with CI/CD tools like git and node called `mar
 
 See [https://rubixml.com/](https://rubixml.com/) for more information.
 
+Sample Docker Compose
+---
+```
+---
+version: '3.4'
+
+services:
+    webapp:
+        image: 'markkimsal/phusion-php:8.0-fpm'
+        environment:
+            WWWUID: ${WWWUID:-1000}
+            WWWGID: ${WWWGID:-1000}
+        ports:
+            - ${FORWARD_APP_PORT:-8080}:8080
+        volumes:
+            - '.:/app'
+            - './config/docker/nginx.vhost.conf:/etc/nginx/conf.d/container-vhost.conf'
+            #- './config/docker/xdebug.ini/:/usr/local/etc/php/conf.d/xdebug.ini'
+```
+See the full example in the scripts folder: [scripts/docker-compose.yml](./scripts/docker-compose.yml)
+
 Nginx Vhost Sample
 ----
 
