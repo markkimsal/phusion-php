@@ -185,8 +185,7 @@ RUN set -ex \
 	;else \
 		mkdir /opt/microsoft; \
 		mkdir /etc/odbc; \
-		mkdir /etc/ODBC; \
-		mkdir /optionallibs \
+		mkdir /etc/ODBC \
 	;fi
 
 
@@ -205,7 +204,5 @@ RUN set -ex \
 				/usr/lib/x86_64-linux-gnu/libquadmath.so.0   \
 				/usr/lib/x86_64-linux-gnu/libtmglib.so.3     \
 				/optionallibs/ \
-	;else \
-		mkdir /optionallibs \
 	;fi
 

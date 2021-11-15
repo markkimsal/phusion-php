@@ -1,5 +1,8 @@
 FROM markkimsal/php:8.0.10-fpm as fpm
 FROM markkimsal/phusion-serverimage:0.11-debian-buster
+ARG WITH_SAMBA
+ARG WITH_SQLSRV
+ARG WITH_TENSOR
 
 RUN install_clean nginx unzip
 
