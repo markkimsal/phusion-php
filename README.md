@@ -84,7 +84,7 @@ All images have BCMATH extension available (as of 7.3.26)
 PHP 7.3 images have updated timezone database for 2021.  (does your distro have updated Samoan DST?)
 
 
-Rare extensions (Tensor, Samba)
+Rare extensions (Tensor, Samba, gPRC)
 ---
 These niche extension contribute considerable size to the image.  If you need them, set the flag in the make file and you will
 get a custom image name like `markkimsal/phusion-php-{ext}-{ext}:7.4-fpm`.
@@ -112,6 +112,14 @@ Your resulting image will be named `markkimsal/phusion-php-tensor:8.0-fpm`.
 There will be an additional image with CI/CD tools like git and node called `markkimsal/phusion-php-tensor:8.0-builder`.
 
 See [https://rubixml.com/](https://rubixml.com/) for more information.
+
+How to Build with gRPC extension (google/firebase)
+---
+```
+GRPC=1 bash ./make-80.sh
+```
+Your resulting image will be named `markkimsal/phusion-php-grpc:8.0-fpm`.
+There will be an additional image with CI/CD tools like git and node called `markkimsal/phusion-php-grpc:8.0-builder`.
 
 Sample Docker Compose
 ---
