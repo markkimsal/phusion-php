@@ -2,6 +2,7 @@ FROM php:8.0.10-fpm-buster as fpm
 ARG WITH_TENSOR=""
 ARG WITH_SAMBA=""
 ARG WITH_SQLSRV=""
+ARG WITH_GRPC=""
 
 # MYSQL
 RUN docker-php-ext-install pdo pdo_mysql mysqli
@@ -191,18 +192,29 @@ RUN set -ex \
 
 # TENSOR
 RUN set -ex \
-	&&  if [ ! -z "$WITH_TENSOR" ] ; then \
+    &&  if [ ! -z "$WITH_TENSOR" ] ; then \
         apt-get update ; \
         apt-get install -y libopenblas-dev liblapacke-dev re2c gfortran; \
         pecl install tensor; \
         docker-php-ext-enable tensor; \
-		cp /usr/lib/x86_64-linux-gnu/libopenblas.so.0        \
-				/usr/lib/x86_64-linux-gnu/libblas.so.3       \
-				/usr/lib/x86_64-linux-gnu/liblapacke.so.3    \
-				/usr/lib/x86_64-linux-gnu/liblapack.so.3     \
-				/usr/lib/x86_64-linux-gnu/libgfortran.so.5   \
-				/usr/lib/x86_64-linux-gnu/libquadmath.so.0   \
-				/usr/lib/x86_64-linux-gnu/libtmglib.so.3     \
-				/optionallibs/ \
-	;fi
+        cp /usr/lib/x86_64-linux-gnu/libopenblas.so.0    \
+            /usr/lib/x86_64-linux-gnu/libblas.so.3       \
+            /usr/lib/x86_64-linux-gnu/liblapacke.so.3    \
+            /usr/lib/x86_64-linux-gnu/liblapack.so.3     \
+            /usr/lib/x86_64-linux-gnu/libgfortran.so.5   \
+            /usr/lib/x86_64-linux-gnu/libquadmath.so.0   \
+            /usr/lib/x86_64-linux-gnu/libtmglib.so.3     \
+            /optionallibs/ \
+    ;fi
+
+# GRPC
+RUN set -ex \
+    &&  if [ ! -z "$WITH_GRPC" ] ; then \
+        apt-get update ; \
+        apt-get install -y zlib1g-dev; \
+        pecl install grpc; \
+        pecl install protobuf; \
+        docker-php-ext-enable grpc; \
+        docker-php-ext-enable protobuf; \
+    fi
 
