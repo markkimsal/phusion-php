@@ -1,4 +1,4 @@
-FROM markkimsal/php:8.0.10-fpm as fpm
+FROM markkimsal/php:8.0.13-fpm as fpm
 FROM markkimsal/phusion-serverimage:0.11-debian-buster
 ARG WITH_SAMBA
 ARG WITH_SQLSRV
@@ -22,9 +22,13 @@ COPY --from=fpm /usr/lib/x86_64-linux-gnu/libargon*.so.1   \
                 /usr/lib/x86_64-linux-gnu/libpq.so.5 \
                 /usr/lib/x86_64-linux-gnu/
 
-#MSSQL
+# MSSQL
 COPY --from=fpm /optionallibs \
                 /usr/lib/x86_64-linux-gnu/
+
+# MSSQL
+COPY --from=fpm /optionaletc /etc/
+COPY --from=fpm /opt /opt/
 
 #COPY --from=fpm /usr/lib/x86_64-linux-gnu/libodbc*.so.2     \
 #                /usr/lib/x86_64-linux-gnu/libodbcinst*.so.2 \
@@ -99,9 +103,6 @@ RUN set -ex && \
         rm -rf /var/lib/apt/lists/*; \
     }
 
-# MSSQL
-COPY --from=fpm /etc/odbc* /etc/
-COPY --from=fpm /etc/ODBC* /etc/
 
 
 WORKDIR /app
