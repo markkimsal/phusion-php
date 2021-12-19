@@ -12,6 +12,7 @@ docker run --rm -ti \
     -u www-data \
     -e WWWUID: ${WWWUID:-1000}
     -e WWWGID: ${WWWGID:-1000}
+    -e 'COMPOSER_HOME=/var/lib/html'
     -v $(pwd):/app \
     -v $HOME/.composer:/var/lib/html/.composer \
     -w /app \
