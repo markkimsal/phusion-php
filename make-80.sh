@@ -20,7 +20,16 @@ fi
 
 echo "Building tag markkimsal/$IMAGE_NAME ..."
 
-docker build -t markkimsal/php:8.0.13-fpm \
+echo "docker build -t markkimsal/php:8.0.15-fpm \
+	--build-arg WITH_TENSOR="${TENSOR}" \
+	--build-arg WITH_SAMBA="${SAMBA}" \
+	--build-arg WITH_SQLSRV="${SQLSRV}" \
+	--build-arg WITH_GRPC="${GRPC}" \
+	--target=fpm \
+	-f ./php-80/Dockerfile-php php-80"
+
+
+docker build -t markkimsal/php:8.0.15-fpm \
 	--build-arg WITH_TENSOR="${TENSOR}" \
 	--build-arg WITH_SAMBA="${SAMBA}" \
 	--build-arg WITH_SQLSRV="${SQLSRV}" \
@@ -28,14 +37,14 @@ docker build -t markkimsal/php:8.0.13-fpm \
 	--target=fpm \
 	-f ./php-80/Dockerfile-php php-80
 
-docker build -t markkimsal/$IMAGE_NAME:8.0.13-fpm \
+docker build -t markkimsal/$IMAGE_NAME:8.0.15-fpm \
 	--build-arg WITH_TENSOR="${TENSOR}" \
 	--build-arg WITH_SAMBA="${SAMBA}" \
 	--build-arg WITH_SQLSRV="${SQLSRV}" \
 	--build-arg WITH_GRPC="${GRPC}" \
 	-f ./php-80/Dockerfile-phusion php-80
 
-docker build -t markkimsal/$IMAGE_NAME:8.0.13-builder \
+docker build -t markkimsal/$IMAGE_NAME:8.0.15-builder \
 	--build-arg WITH_TENSOR="${TENSOR}" \
 	--build-arg WITH_SAMBA="${SAMBA}" \
 	--build-arg WITH_SQLSRV="${SQLSRV}" \

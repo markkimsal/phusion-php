@@ -1,4 +1,4 @@
-FROM php:8.0.13-fpm-buster as fpm
+FROM php:8.0.15-fpm-buster as fpm
 ARG WITH_TENSOR=""
 ARG WITH_SAMBA=""
 ARG WITH_SQLSRV=""
@@ -177,16 +177,14 @@ RUN set -ex \
 
 RUN mkdir /optionallibs;
 RUN mkdir /optionaletc;
-RUN mkdir /opt/microsoft;
 
 RUN set -ex \
 	&&  if [ ! -z "$WITH_SQLSRV" ] ; then \
-		cp /usr/lib/x86_64-linux-gnu/libodbc*.so.2      \
-			/usr/lib/x86_64-linux-gnu/libodbcinst*.so.2 \
-			/usr/lib/x86_64-linux-gnu/libsybdb*.so.5    \
-			/optionallibs/ \
-		cp -R /etc/odbc /optionaletc/; \
-		cp -R /etc/ODBC /optionaletc/; \
+		cp /usr/lib/x86_64-linux-gnu/libodbc.so.2      \
+			/usr/lib/x86_64-linux-gnu/libodbccr.so.2   \
+			/usr/lib/x86_64-linux-gnu/libodbcinst.so.2 \
+			/usr/lib/x86_64-linux-gnu/libsybdb*.so.5   \
+			/optionallibs/; \
 	fi
 
 
