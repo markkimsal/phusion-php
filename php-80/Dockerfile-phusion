@@ -3,7 +3,10 @@ FROM markkimsal/phusion-serverimage:0.11-debian-buster
 ARG WITH_SAMBA
 ARG WITH_SQLSRV
 ARG WITH_TENSOR
+ARG WITH_IMAGICK
+ARG WITH_GMAGICK
 
+RUN apt-get update;
 RUN install_clean nginx
 COPY runit /etc/service/
 COPY start-container /usr/local/bin/start-container

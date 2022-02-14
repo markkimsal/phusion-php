@@ -3,6 +3,8 @@ ARG WITH_TENSOR=""
 ARG WITH_SAMBA=""
 ARG WITH_SQLSRV=""
 ARG WITH_GRPC=""
+ARG WITH_IMAGICK=""
+ARG WITH_GMAGICK=""
 
 # MYSQL
 RUN docker-php-ext-install pdo pdo_mysql mysqli
@@ -214,5 +216,14 @@ RUN set -ex \
         pecl install protobuf; \
         docker-php-ext-enable grpc; \
         docker-php-ext-enable protobuf; \
+    fi
+
+# IMAGICK
+RUN set -ex \
+    &&  if [ ! -z "$WITH_IMAGICK" ] ; then \
+        apt-get update; \
+        apt-get install -y libgraphicsmagick1-dev libmagickwand-6-headers libmagickwand-dev; \
+        pecl install imagick; \
+        docker-php-ext-enable imagick; \
     fi
 

@@ -3,7 +3,11 @@ FROM markkimsal/phusion-serverimage:0.11-debian-buster
 ARG WITH_SAMBA
 ARG WITH_SQLSRV
 ARG WITH_TENSOR
+ARG WITH_IMAGICK
+ARG WITH_GMAGICK
 
+
+RUN apt-get update;
 RUN install_clean nginx unzip
 
 COPY --from=fpm /usr/local/ /usr/local/
@@ -22,7 +26,8 @@ COPY --from=fpm /usr/lib/x86_64-linux-gnu/libargon*.so.1   \
                 /usr/lib/x86_64-linux-gnu/libpq.so.5 \
                 /usr/lib/x86_64-linux-gnu/
 
-# MSSQL
+
+
 COPY --from=fpm /optionallibs \
                 /usr/lib/x86_64-linux-gnu/
 
@@ -35,8 +40,6 @@ COPY --from=fpm /opt /opt/
 #                /usr/lib/x86_64-linux-gnu/libsybdb*.so.5    \
 #                /usr/lib/x86_64-linux-gnu/
 #
-
-COPY --from=fpm /opt/microsoft/ /opt/microsoft/
 
 RUN echo '/opt/microsoft/msodbcsql17/lib64/' > /etc/ld.so.conf.d/msodbcsql.conf
 
