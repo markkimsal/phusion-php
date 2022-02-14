@@ -89,6 +89,13 @@ Rare extensions (Tensor, Samba, gPRC)
 These niche extension contribute considerable size to the image.  If you need them, set the flag in the make file and you will
 get a custom image name like `markkimsal/phusion-php-{ext}-{ext}:7.4-fpm`.
 
+Rare extensions:
+ * tensor
+ * smb
+ * grpc
+ * mssql
+ * imagick
+
 MSSQL
 ---
 To avoid licensing issues, MSSQL and DBLIB have been moved to a custom image `markkimsal/phusion-php-mssql:8.0-fpm`.
