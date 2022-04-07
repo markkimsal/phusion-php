@@ -1,7 +1,7 @@
 FROM markkimsal/php:7.4.26-fpm as fpm
 FROM markkimsal/phusion-serverimage:0.11-debian-buster
 
-RUN install_clean nginx
+RUN install_clean nginx dumb-init
 COPY runit /etc/service/
 COPY start-container /usr/local/bin/start-container
 RUN chmod a+x /usr/local/bin/start-container

@@ -23,6 +23,10 @@ UID and www-data
 You can now set the www-data user id and group id at runtime with environment variables WWWUID and WWWGID.
 See 'start-container' for more details.  Inspired by laravel sail.
 
+dumb-init
+---
+Added dumb-init to translate SIGTERM to SIGQUIT for php-fpm
+
 Usage
 ---
 Copy the scripts/docker-compose.yml to the root of your project.

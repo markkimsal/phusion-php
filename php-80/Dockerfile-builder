@@ -8,7 +8,7 @@ ARG WITH_GMAGICK
 
 
 RUN apt-get update;
-RUN install_clean nginx unzip
+RUN install_clean nginx unzip dumb-init
 
 COPY --from=fpm /usr/local/ /usr/local/
 COPY --from=fpm /usr/lib/x86_64-linux-gnu/libargon*.so.1   \

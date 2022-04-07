@@ -138,7 +138,7 @@ RUN set -ex && \
     }
 
 FROM markkimsal/phusion-serverimage:0.11-debian-buster
-RUN install_clean nginx
+RUN install_clean nginx dumb-init
 
 COPY --from=fpm /usr/local/ /usr/local/
 COPY --from=fpm /usr/bin/ /usr/bin/

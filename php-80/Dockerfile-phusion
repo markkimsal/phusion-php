@@ -7,7 +7,7 @@ ARG WITH_IMAGICK
 ARG WITH_GMAGICK
 
 RUN apt-get update;
-RUN install_clean nginx
+RUN install_clean nginx dumb-init
 COPY runit /etc/service/
 COPY start-container /usr/local/bin/start-container
 RUN chmod a+x /usr/local/bin/start-container

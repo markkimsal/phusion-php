@@ -36,7 +36,7 @@ docker build -t markkimsal/${IMAGE_NAME}:7.4.26-builder \
 	-f ./php-74/Dockerfile-builder php-74
 
 docker tag markkimsal/${IMAGE_NAME}:7.4.26-builder  markkimsal/${IMAGE_NAME}:7.4-builder
-#docker tag markkimsal/${IMAGE_NAME}:7.4.26-fpm  markkimsal/${IMAGE_NAME}:7.4-fpm
+docker tag markkimsal/${IMAGE_NAME}:7.4.26-fpm  markkimsal/${IMAGE_NAME}:7.4-fpm
 
 docker push markkimsal/${IMAGE_NAME}:7.4.26-builder; docker push markkimsal/${IMAGE_NAME}:7.4-builder
 docker push markkimsal/${IMAGE_NAME}:7.4.26-fpm;     docker push markkimsal/${IMAGE_NAME}:7.4-fpm
