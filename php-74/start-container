@@ -11,4 +11,4 @@ if [ ! -z "$WWWGID" ]; then
     chgrp -R www-data /var/www
     chgrp www-data /app;
 fi
-/sbin/my_init
+exec /sbin/my_init

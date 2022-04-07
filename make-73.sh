@@ -7,3 +7,8 @@ docker tag markkimsal/phusion-lemp:7.3.30-builder markkimsal/phusion-lemp:7.3-bu
 docker tag markkimsal/phusion-lemp:7.3.30-mysql markkimsal/phusion-lemp:7.3-mysql
 docker tag markkimsal/phusion-lemp:7.3.30-pgsql markkimsal/phusion-lemp:7.3-pgsql
 docker tag markkimsal/phusion-lemp:7.3.30-mssql markkimsal/phusion-lemp:7.3-mssql
+
+docker push markkimsal/phusion-lemp:7.3.30-builder; docker push markkimsal/phusion-lemp:7.3-builder
+docker push markkimsal/phusion-lemp:7.3.30-mysql; docker push markkimsal/phusion-lemp:7.3-mysql
+docker push markkimsal/phusion-lemp:7.3.30-pgsql; docker push markkimsal/phusion-lemp:7.3-pgsql
+docker push markkimsal/phusion-lemp:7.3.30-mssql; docker push markkimsal/phusion-lemp:7.3-mssql
