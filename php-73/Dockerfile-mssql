@@ -33,7 +33,7 @@ RUN docker-php-ext-configure pdo_dblib \
     && docker-php-ext-install pdo_dblib
 
 # Install pdo_sqlsrv and sqlsrv from PECL. Replace pdo_sqlsrv-4.1.8preview with preferred version.
-RUN pecl install pdo_sqlsrv sqlsrv \
+RUN pecl install pdo_sqlsrv-5.9.0 sqlsrv-5.9.0 \
     && docker-php-ext-enable pdo_sqlsrv sqlsrv
 
 RUN set -ex \
