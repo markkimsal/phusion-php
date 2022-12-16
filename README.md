@@ -1,3 +1,12 @@
+UPDATED Project:
+===
+https://github.com/markkimsal/laravel-docker-platform
+
+It's not specific to laravel, but it can be optimized to run horizon and cron for schedules.
+
+This repo is not updated anymore.
+
+
 PHP For Local Dev, CD Pipeline, Production Deployment
 ===
 Xdebug for local dev
